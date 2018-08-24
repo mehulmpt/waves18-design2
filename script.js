@@ -10,8 +10,8 @@ const playerBackward = document.getElementById('playerBackward')
 // preloading
 var req1 = new XMLHttpRequest()
 var req2 = new XMLHttpRequest()
-req1.open('GET', '/waves.mp4', true)
-req2.open('GET', '/wavesx.mp4', true)
+req1.open('GET', '/dark.webm', true)
+req2.open('GET', '/krad.mp4', true)
 req1.responseType = 'blob'
 req2.responseType = 'blob'
 
@@ -158,7 +158,7 @@ const videoInfo = {
 
 container.addEventListener('wheel', debounce(handleScroll, 15, true), false)
 
-function handleScroll(e) {
+async function handleScroll(e) {
 	const delta = e.wheelDeltaY/200
 	const seekDirection = delta > 0 ? REWIND : FORWARD
 
@@ -186,6 +186,8 @@ function handleScroll(e) {
 		document.getElementById('playerForward').classList.remove('hide')
 		document.getElementById('playerBackward').classList.add('hide')
 	}
+
+	await activePlayer.play()
 
 	clearTimeout(seekTimer)
 	//console.log('Requesting and setting speed')
