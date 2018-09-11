@@ -36,7 +36,9 @@ req1.onload = function() {
 	   // Video is now downloaded
 	   // and we can set it as source on the video element
 	   playerBackward.src = vid
-	   playerBackward.currentTime = vid.duration
+	   vid.onloadedmetadata = _ => {
+		playerBackward.currentTime = vid.duration
+	   }
 	}
  }
 
@@ -156,10 +158,76 @@ const videoInfo = {
 	}*/
 }
 
+//container.addEventListener('wheel', debounce(handleScroll, 15, true), false)
+
+let ts, touchduration = 20, revTimer, forTimer
+
+document.getElementById('forward').addEventListener('touchstart', e => {
+	console.log('Touching forward')
+	forTimer = setInterval(_ => {
+		
+		var event = new CustomEvent('wheel')
+		event.forcedDelta = -600
+		event.initEvent("wheel", false, true)
+		container.dispatchEvent(event)
+
+	}, touchduration)
+})
+
+document.getElementById('rewind').addEventListener('touchstart', e => {
+	console.log('Touching rewind')
+	revTimer = setInterval(_ => {
+		
+		var event = new CustomEvent('wheel')
+		event.forcedDelta = 600
+		event.initEvent("wheel", false, true)
+		container.dispatchEvent(event)
+
+	}, touchduration)
+})
+
+document.getElementById('forward').addEventListener('touchend', e => {
+	console.log('Touching forward over')
+
+	clearInterval(forTimer)
+})
+
+document.getElementById('rewind').addEventListener('touchend', e => {
+	console.log('Touching rewind over')
+
+	clearInterval(revTimer)
+})
+
 container.addEventListener('wheel', debounce(handleScroll, 15, true), false)
 
+/*
+document.addEventListener('touchstart', e => {
+	ts = e.touches[0].clientY
+}, false)
+
+document.addEventListener('touchmove', e => {
+	var event = new CustomEvent('wheel');
+
+
+	var te = e.changedTouches[0].clientY
+    if (ts > te) {
+		console.log('down');
+		event.forcedDelta = -600
+    } else {
+		console.log('up');
+		event.forcedDelta = 600
+	}
+
+	event.initEvent("wheel", false, true)
+	container.dispatchEvent(event)
+	
+}, false)*/
+
 async function handleScroll(e) {
-	const delta = e.wheelDeltaY/200
+	const delta = (e.wheelDeltaY || e.forcedDelta)/200 // forcedDelta => touchmove => mobile
+
+	console.log('delta = ', e.wheelDeltaY)
+
 	const seekDirection = delta > 0 ? REWIND : FORWARD
 
 	/*if(mainSEEK === FORWARD && seekDirection === REWIND) {
@@ -195,6 +263,7 @@ async function handleScroll(e) {
 	
 	//if(delta < 0) {
 		// scrolling forward, +ve playbackrate
+		if(isNaN(videoInfo.speed)) videoInfo.speed = 0
 		videoInfo.speed += Math.abs(delta)
 	//} else {
 		// scrolling back but -ve playback not allowed
@@ -233,7 +302,7 @@ async function handleScroll(e) {
 				//console.log(videoInfo.speed)
 			}
 		}, 10)
-	}, 500)
+	}, 50)
 
 	//console.log(e.wheelDeltaY)
 }

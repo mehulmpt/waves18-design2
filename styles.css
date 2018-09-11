@@ -24,3 +24,27 @@ body {
 	margin: 0;
 	-webkit-overflow-scrolling: touch;
 }
+
+video {
+    object-fit: cover;
+}
+
+#rewind {
+	position: absolute;
+	height: 100%;
+	width: 50%;
+	left: 0;
+	bottom: 0;
+	background: rgba(30, 255, 0, 0);
+	z-index: 99999999;
+}
+
+#forward {
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	right: 0;
+	bottom: 0;
+	z-index: 99999999;
+	background: rgba(212, 77, 77, 0);
+}
