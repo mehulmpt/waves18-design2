@@ -26,7 +26,8 @@ body {
 }
 
 video {
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
 }
 
 #rewind {
